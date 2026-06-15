@@ -1,0 +1,52 @@
+﻿rules:
+
+  - id: ad-credentials-hardcoded
+    patterns:
+      - pattern: |
+          let $CRED = "$VALUE";
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: '.*(password|passwd|secret|ldap_pass|ad_pass).*'
+    message: "Credentials AD potentiellement en dur dans le code [M-010]"
+    languages: [rust]
+    severity: ERROR
+
+  - id: unsafe-block-forbidden
+    pattern: unsafe { ... }
+    message: "Bloc unsafe detecte - justification obligatoire en revue [M-012]"
+    languages: [rust]
+    severity: ERROR
+
+  - id: stacktrace-in-response
+    patterns:
+      - pattern: |
+          $RESP.body($ERR.to_string())
+    message: "Stack trace potentiellement exposee dans la reponse API [M-004]"
+    languages: [rust]
+    severity: WARNING
+
+  - id: sensitive-data-in-logs
+    patterns:
+      - pattern: |
+          tracing::info!($FMT, ..., $VAR, ...)
+      - metavariable-regex:
+          metavariable: $FMT
+          regex: '.*(password|token|secret|credential|hash).*'
+    message: "Donnee sensible potentiellement loggee en clair [M-016]"
+    languages: [rust]
+    severity: ERROR
+
+  - id: ldap-write-operation
+    patterns:
+      - pattern: ldap_add(...)
+      - pattern: ldap_modify(...)
+      - pattern: ldap_delete(...)
+    message: "Operation LDAP en ecriture detectee - compte lecture seule obligatoire [M-024]"
+    languages: [rust]
+    severity: ERROR
+
+  - id: unwrap-forbidden
+    pattern: $X.unwrap()
+    message: "unwrap() interdit - utiliser .expect() avec message ou propagation erreur [CDC 5.1]"
+    languages: [rust]
+    severity: WARNING
