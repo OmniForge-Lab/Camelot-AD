@@ -1,6 +1,5 @@
-rules:
+ï»¿rules:
 
-  # M-010 — Credentials AD en clair dans le code
   - id: ad-credentials-hardcoded
     patterns:
       - pattern: |
@@ -12,23 +11,20 @@ rules:
     languages: [rust]
     severity: ERROR
 
-  # M-012 — Usage de unsafe interdit sauf exception documentée
   - id: unsafe-block-forbidden
     pattern: unsafe { ... }
-    message: "Bloc unsafe détecté — justification obligatoire en revue [M-012]"
+    message: "Bloc unsafe detecte - justification obligatoire en revue [M-012]"
     languages: [rust]
     severity: ERROR
 
-  # M-004 — Stack trace exposée dans les réponses API
   - id: stacktrace-in-response
     patterns:
       - pattern: |
           $RESP.body($ERR.to_string())
-    message: "Stack trace potentiellement exposée dans la réponse API [M-004]"
+    message: "Stack trace potentiellement exposee dans la reponse API [M-004]"
     languages: [rust]
     severity: WARNING
 
-  # M-016 — Logging de données sensibles
   - id: sensitive-data-in-logs
     patterns:
       - pattern: |
@@ -36,24 +32,21 @@ rules:
       - metavariable-regex:
           metavariable: $FMT
           regex: '.*(password|token|secret|credential|hash).*'
-    message: "Donnée sensible potentiellement loggée en clair [M-016]"
+    message: "Donnee sensible potentiellement loggee en clair [M-016]"
     languages: [rust]
     severity: ERROR
 
-  # M-024 — Opérations LDAP write interdites (lecture seule obligatoire)
   - id: ldap-write-operation
     patterns:
       - pattern: ldap_add(...)
       - pattern: ldap_modify(...)
       - pattern: ldap_delete(...)
-    message: "Opération LDAP en écriture détectée — compte lecture seule obligatoire [M-024]"
+    message: "Operation LDAP en ecriture detectee - compte lecture seule obligatoire [M-024]"
     languages: [rust]
     severity: ERROR
 
-  # CDC §5.1 — unwrap() interdit en production
   - id: unwrap-forbidden
     pattern: $X.unwrap()
-    message: "unwrap() interdit — utiliser .expect() avec message ou propagation d erreur [CDC §5.1]"
+    message: "unwrap() interdit - utiliser .expect() avec message ou propagation erreur [CDC 5.1]"
     languages: [rust]
     severity: WARNING
-
